@@ -36,12 +36,18 @@ def upload_to_supabase(file_path: str, bucket_name: str, object_name: str) -> st
         except Exception as delete_error:
             print(f"Warning: Could not delete existing file: {delete_error}")
 
+        # Upload the file
         with open(file_path, "rb") as file:
-            storage.upload(object_name, file, content_type="video/mp4")
+            storage.upload(object_name, file)
 
+        # Update the file's metadata to set the correct MIME type
+        storage.update(object_name, {"content_type": "video/mp4"})
+
+        # Get the public URL of the file
         return storage.get_public_url(object_name)
     except Exception as e:
         raise RuntimeError(f"Supabase upload failed: {e}")
+
 
 def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
     image_path = 'temp_image.jpg'
