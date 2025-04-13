@@ -78,7 +78,7 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
 @app.post("/generate-video/")
 def generate_video(data: VideoRequest):
     try:
-        unique_filename = f"{uuid4()}.mp4"
+        unique_filename = "output_video.mp4"
         output_path = create_video(data.image_url, data.audio_url, "output_video.mp4")
         video_url = upload_to_supabase(output_path, BUCKET_NAME, unique_filename)
         os.remove(output_path)
