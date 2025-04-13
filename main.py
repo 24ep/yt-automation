@@ -6,14 +6,20 @@ import requests
 import imageio_ffmpeg
 from uuid import uuid4
 from supabase import create_client
+from dotenv import load_dotenv
+import os
 
 # Initialize FastAPI app
 app = FastAPI()
 
-# Supabase credentials
-SUPABASE_URL = "https://xvxhlmdueewflrqjscfr.supabase.co"
-SUPABASE_KEY = "your-supabase-service-key"
-BUCKET_NAME = "flower-garden-music-workflows"
+
+
+# Load environment variables from .env
+load_dotenv()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+BUCKET_NAME = os.getenv("BUCKET_NAME")
 
 # Define the request body schema
 class VideoRequest(BaseModel):
