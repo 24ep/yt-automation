@@ -21,17 +21,17 @@ BUCKET_NAME = os.getenv("BUCKET_NAME")
 # ---------------------------
 # Image Functions (Modified to use provided color)
 # ---------------------------
-def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", sentect="Randomly Generated"):
+def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", sentence="Randomly Generated"):
     """
     Creates and saves an image using the provided hex code and color name.
     Displays the provided hex and color name on the right-bottom of the image,
-    and the labels 'phase' and 'sentect' on the left-bottom.
+    and the labels 'phase' and 'sentence' on the left-bottom.
     
     Parameters:
       provided_color_name: The name of the color (e.g., "red").
       hex_code: The hexadecimal code for the color (e.g., "#FF0000").
       phase: Text label (default: "Beautiful Color").
-      sentect: Text label (default: "Randomly Generated").
+      sentence: Text label (default: "Randomly Generated").
     """
     img_width, img_height = 1280, 720
     border = 40
@@ -55,10 +55,10 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
     font_large = ImageFont.truetype(font_path, 28)
 
     # Add text:
-    # Left-bottom: phase and sentect labels,
+    # Left-bottom: phase and sentence labels,
     # Right-bottom: hex code and provided color name.
     draw.text((40, img_height - 90), phase, font=font_large, fill="black")
-    draw.text((40, img_height - 50), sentect, font=font_small, fill="black")
+    draw.text((40, img_height - 50), sentence, font=font_small, fill="black")
     draw.text((img_width - 270, img_height - 90), f'{hex_code} - {provided_color_name.title()}', font=font_large, fill="black")
 
     # Save the generated image locally
@@ -153,7 +153,7 @@ def generate_color_image_endpoint():
       - color_name: The name of the color (e.g., "red").
       - hex_code: The hexadecimal code for the color (e.g., "#FF0000").
       - phase: (Optional) Label text (default: "Beautiful Color").
-      - sentect: (Optional) Label text (default: "Randomly Generated").
+      - sentence: (Optional) Label text (default: "Randomly Generated").
     Generates an image using the provided color, uploads it to Supabase, and returns its public URL.
     """
     data = request.get_json() or {}
@@ -163,11 +163,11 @@ def generate_color_image_endpoint():
     provided_color_name = data['color_name']
     hex_code = data['hex_code']
     phase = data.get('phase', "Beautiful Color")
-    sentect = data.get('sentect', "Randomly Generated")
+    sentence = data.get('sentence', "Randomly Generated")
 
     try:
         # Generate the image using the provided color details and labels
-        create_color_image(provided_color_name, hex_code, phase, sentect)
+        create_color_image(provided_color_name, hex_code, phase, sentence)
         object_name = "random_color_image.png"  # Fixed object name; adjust as needed
         # Upload the image to Supabase with content type "image/png"
         image_url = upload_to_supabase("random_color_image.png", BUCKET_NAME, object_name, content_type="image/png")
