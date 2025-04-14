@@ -13,6 +13,10 @@ from supabase import create_client
 from dotenv import load_dotenv
 from io import BytesIO
 import json
+import base64
+import mimetypes
+from google import genai
+from google.genai import types
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -24,7 +28,7 @@ load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 BUCKET_NAME = os.getenv("BUCKET_NAME")
-
+GIMINI_API_KEY = os.getenv("GIMINI_API_KEY")
 class VideoRequest(BaseModel):
     image_url: str
     audio_url: str
@@ -35,11 +39,18 @@ class ImageRequest(BaseModel):
     phase: str
     sentence: str
 
-def optimize_image(input_path, output_path, quality=60):
-    # Open the image using PIL
-    with Image.open(input_path) as img:
-        # Save it as a JPEG with reduced quality
-        img.save(output_path, "JPEG", quality=quality)
+class ImageGiminiRequest(BaseModel):
+    promtp: str
+
+
+
+
+
+def save_binary_file(file_name, data):
+    f = open(file_name, "wb")
+    f.write(data)
+    f.close()
+
         
 # ---------------------------
 # Image Functions (Modified to use provided color)
@@ -233,4 +244,52 @@ def generate_color_image_endpoint(data: ImageRequest):
     image_url = upload_to_supabase_image("random_color_image.jpeg", "cover", object_name, content_type="image/jpeg")
     os.remove("random_color_image.jpeg")
     return {"image_url": image_url}
+
+@app.post("/generate-gimini-image/")
+def generate(data:ImageGiminiRequest):
+    promtp = data.promtp
+    client = genai.Client(
+        api_key=GIMINI_API_KEY,
+    )
+
+    model = "gemini-2.0-flash-exp-image-generation"
+    contents = [
+        types.Content(
+            role="user",
+            parts=[
+                types.Part.from_text(text="""+str(promtp)+"""),
+            ],
+        ),
+    ]
+    generate_content_config = types.GenerateContentConfig(
+        response_modalities=[
+            "image",
+            "text",
+        ],
+        response_mime_type="text/plain",
+    )
+
+    for chunk in client.models.generate_content_stream(
+        model=model,
+        contents=contents,
+        config=generate_content_config,
+    ):
+        if not chunk.candidates or not chunk.candidates[0].content or not chunk.candidates[0].content.parts:
+            continue
+        if chunk.candidates[0].content.parts[0].inline_data:
+            file_name = "export.jpeg"
+            inline_data = chunk.candidates[0].content.parts[0].inline_data
+            file_extension = mimetypes.guess_extension(inline_data.mime_type)
+            save_binary_file(
+                f"{file_name}{file_extension}", inline_data.data
+            )
+
+            object_name = file_name  # Fixed object name; adjust as needed
+            # Upload the image to Supabase with content type "image/jpg"
+            image_url = upload_to_supabase_image("gimini_image.jpeg", "cover", object_name, content_type="image/jpeg")
+            os.remove("random_color_image.jpeg")
+            return {"image_url": image_url}
+       
+        else:
+            print(chunk.text)
     
