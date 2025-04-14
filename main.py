@@ -67,18 +67,12 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
     # Draw the main color block using the provided color
     draw.rectangle([border, border, img_width - border, img_height - border - 80], fill=color_rgb)
     
-    # Download the Google Font without storing it locally
-    font_url = "https://github.com/google/fonts/blob/main/apache/opensanshebrew/OpenSansHebrew-Regular.ttf"
-    response = requests.get(font_url)
-    if response.status_code != 200:
-        raise Exception("Failed to download the font.")
+    font_path = "times.ttf"  # Update this path as needed
     
     # Load the font directly from memory
-    font_data = BytesIO(response.content)
-    font_data.seek(0)
-    font_small = ImageFont.truetype(font_data, 18)
-    font_data.seek(0)  # Reset the buffer to reuse the same font data for a different size
-    font_large = ImageFont.truetype(font_data, 28)
+    # Load fonts
+    font_small = ImageFont.truetype(18)
+    font_large = ImageFont.truetype(28)
 
     
     
