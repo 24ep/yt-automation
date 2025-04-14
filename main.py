@@ -85,7 +85,7 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
     # Add text labels
     draw.text((40, img_height - 90), phase, font=font_large, fill="black")
     draw.text((40, img_height - 50), sentence, font=font_small, fill="black")
-    draw.text((img_width - 250, img_height - 90), f'{hex_code} - {provided_color_name.title()}', font=font_large, fill="black")
+    draw.text((img_width - 230, img_height - 90), f'{hex_code} - {provided_color_name.title()}', font=font_large, fill="black")
     
     # Save the generated image locally
     image.save("random_color_image.jpeg")
