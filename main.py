@@ -354,19 +354,24 @@ def add_border_and_text_from_url(data:BorderSizeRequest):
         title_font = subtitle_font = quote_font = ImageFont.load_default()
 
     quote_text_full = f"{quote_text}\n{quote_author}"
-    quote_x = 40
+    quote_x =  new_width - 250
     quote_y = bordered_img.height + 15
     draw.text((quote_x, quote_y), flower, font=quote_font, fill=(30, 30, 30))
-
-    title_w, title_h = draw.textsize(title_text, font=title_font)
-    subtitle_w, subtitle_h = draw.textsize(subtitle_text, font=subtitle_font)
-
+    
+    title_bbox = draw.textbbox((0, 0), title_text, font=title_font)
+    subtitle_bbox = draw.textbbox((0, 0), subtitle_text, font=subtitle_font)
+    
+    title_w = title_bbox[2] - title_bbox[0]
+    title_h = title_bbox[3] - title_bbox[1]
+    subtitle_w = subtitle_bbox[2] - subtitle_bbox[0]
+    subtitle_h = subtitle_bbox[3] - subtitle_bbox[1]
+    
     right_margin = 40
-    title_x = new_width - title_w - right_margin
-    subtitle_x = new_width - subtitle_w - right_margin
+    title_x = title_w - right_margin
+    subtitle_x = subtitle_w - right_margin
     title_y = bordered_img.height + 15
     subtitle_y = title_y + title_h + 10
-
+    
     draw.text((title_x, title_y), title_text, font=title_font, fill=(30, 30, 30))
     draw.text((subtitle_x, subtitle_y), subtitle_text, font=subtitle_font, fill=(30, 30, 30))
 
