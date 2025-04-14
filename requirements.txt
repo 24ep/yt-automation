@@ -5,3 +5,5 @@ imageio-ffmpeg
 supabase
 python-multipart
 python-dotenv
+Pillow
+webcolors
