@@ -82,7 +82,7 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
     draw.text((img_width - 250, img_height - 90), f'{hex_code} - {provided_color_name.title()}', font=font_large, fill="black")
     
     # Save the generated image locally
-    image.save("random_color_image.png")
+    image.save("random_color_image.jpg")
     # image.show()  # Uncomment to display the image
 
 # ---------------------------
@@ -192,7 +192,7 @@ def generate_color_image_endpoint(data: ImageRequest):
     create_color_image(provided_color_name, hex_code, phase, sentence)
     object_name = "random_color_image.png"  # Fixed object name; adjust as needed
     # Upload the image to Supabase with content type "image/png"
-    image_url = upload_to_supabase_image("random_color_image.png", "cover", object_name, content_type="image/png")
+    image_url = upload_to_supabase_image("random_color_image.jpg", "cover", object_name, content_type="image/jpg")
     os.remove("random_color_image.png")
     return {"image_url": image_url}
     
