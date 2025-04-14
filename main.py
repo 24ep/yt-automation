@@ -257,7 +257,7 @@ def generate(data:ImageGiminiRequest):
         types.Content(
             role="user",
             parts=[
-                types.Part.from_text(text="""+str(promtp)+"""),
+                types.Part.from_text(text=f"""{str(promtp)}"""),
             ],
         ),
     ]
