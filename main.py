@@ -1,14 +1,7 @@
-import os
 import random
-import subprocess
-import requests
-from uuid import uuid4
-from dotenv import load_dotenv
 from PIL import Image, ImageDraw, ImageFont
 import webcolors
 import imageio_ffmpeg
-from supabase import create_client
-
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import os
@@ -18,7 +11,6 @@ import imageio_ffmpeg
 from uuid import uuid4
 from supabase import create_client
 from dotenv import load_dotenv
-import os
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -133,12 +125,6 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
 
     return output_path
 
-# ---------------------------
-# Flask App Setup
-# ---------------------------
-# app = Flask(__name__)
-
-# @app.route('/generate-video/', methods=['POST'])
 @app.post("/generate-video/")
 def generate_video_endpoint():
     """
@@ -160,7 +146,6 @@ def generate_video_endpoint():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# @app.route('/generate-color-image/', methods=['POST'])
 @app.post("/generate-color-image/")
 def generate_color_image_endpoint():
     """
@@ -190,9 +175,3 @@ def generate_color_image_endpoint():
         return jsonify({"image_url": image_url})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-# # ---------------------------
-# # Run the Flask App
-# # ---------------------------
-# if __name__ == "__main__":
-#     app.run(debug=True)
