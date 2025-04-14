@@ -1,5 +1,5 @@
 import random
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont , ImageOps , ImageFilter  
 import webcolors
 import imageio_ffmpeg
 from fastapi import FastAPI, HTTPException
