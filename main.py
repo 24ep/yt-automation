@@ -34,7 +34,7 @@ class ImageRequest(BaseModel):
     phase: str
     sentence: str
 
-def optimize_image(input_path, output_path, quality=75):
+def optimize_image(input_path, output_path, quality=60):
     # Open the image using PIL
     with Image.open(input_path) as img:
         # Save it as a JPEG with reduced quality
@@ -161,18 +161,15 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
 
     subprocess.run([
         ffmpeg_path,
-        '-loop', '1',                   # Loop the image indefinitely
-        '-framerate', '30',             # Explicit frame rate for the static image
-        '-i', image_path,               # Input image file (1280x720)
-        '-i', audio_path,               # Input audio file
-        '-c:v', 'libx264',              # Video codec
-        '-preset', 'fast',              # Optional: adjust as needed for speed/quality
-        '-tune', 'stillimage',          # Optimize encoding for a still image
-        '-c:a', 'aac',                  # Audio codec
-        '-b:a', '192k',                 # Audio bitrate
-        '-pix_fmt', 'yuv420p',          # Ensure broad compatibility
-        '-shortest',                   # End the output when the shortest input ends
-        '-y',                          # Overwrite output file if it exists
+        '-loop', '1',
+        '-i', image_path,
+        '-i', audio_path,
+        '-c:v', 'libx264',
+        '-c:a', 'aac',
+        '-b:a', '192k',
+        '-shortest',
+        '-pix_fmt', 'yuv420p',
+        '-y',
         output_path
     ], check=True)
 
