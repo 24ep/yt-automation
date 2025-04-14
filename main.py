@@ -71,8 +71,8 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
     
     # Load the font directly from memory
     # Load fonts
-    font_small = ImageFont.truetype(18)
-    font_large = ImageFont.truetype(28)
+    font_small = ImageFont.truetype(font_path,18)
+    font_large = ImageFont.truetype(font_path,28)
 
     
     
