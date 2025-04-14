@@ -34,6 +34,12 @@ class ImageRequest(BaseModel):
     phase: str
     sentence: str
 
+def optimize_image(input_path, output_path, quality=75):
+    # Open the image using PIL
+    with Image.open(input_path) as img:
+        # Save it as a JPEG with reduced quality
+        img.save(output_path, "JPEG", quality=quality)
+        
 # ---------------------------
 # Image Functions (Modified to use provided color)
 # ---------------------------
@@ -140,12 +146,16 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
     image_path = 'temp_image.jpg'
     audio_path = 'temp_audio.mp3'
     output_path = output_filename
-
+    
+    optimize_image(image_path, image_path, quality=75)
+    
     with open(image_path, 'wb') as f:
         f.write(requests.get(image_url).content)
 
     with open(audio_path, 'wb') as f:
         f.write(requests.get(audio_url).content)
+
+    
 
     ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
 
