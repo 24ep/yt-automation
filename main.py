@@ -42,6 +42,13 @@ class ImageRequest(BaseModel):
 class ImageGiminiRequest(BaseModel):
     promtp: str
 
+class BorderSizeRequest(BaseModel):
+    border_size: str
+    image_url: str
+    phase: str
+    sentence: str
+    flower: str
+
 
 
 def convert_png_to_jpeg(png_path, jpeg_path):
@@ -296,4 +303,80 @@ def generate(data:ImageGiminiRequest):
        
         else:
             print(chunk.text)
+
+
+@app.post("/add-image-border/")
+def add_border_and_text_from_url(data:BorderSizeRequest):
+    border_size = data.border_size
+    image_url = data.image_url
+    phase = data.phase
+    sentence = data.sentence
+    flower = data.flower
+    output_filename = "export_border_image.jpeg"
+    """
+    Downloads an image from a URL, adds a border and text, uploads to Supabase, and returns the public URL.
+    """
+    # Download image from URL
+    response = requests.get(image_url)
+ 
+
+    image = Image.open(BytesIO(response.content)).convert("RGB")
+
+    # Resize to 1280x720 while maintaining aspect ratio
+    target_size = (1280, 720)
+    image = image.resize(target_size, Image.ANTIALIAS)
+
+    # Border and text parameters
+    border_color = (239, 235, 224)
+    quote_text = phase
+    quote_author = sentence
+    title_text = phase
+    subtitle_text = sentence
+    font_path = "times.ttf"  # Ensure this font exists or change to a bundled font
+    extra_bottom_space = 150
+
+    # Add border
+    bordered_img = ImageOps.expand(image, border=border_size, fill=border_color)
+
+    # New canvas
+    new_width = bordered_img.width
+    new_height = bordered_img.height + extra_bottom_space
+    final_img = Image.new("RGB", (new_width, new_height), border_color)
+    final_img.paste(bordered_img, (0, 0))
+
+    # Draw text
+    draw = ImageDraw.Draw(final_img)
+    try:
+        title_font = ImageFont.truetype(font_path, size=34)
+        subtitle_font = ImageFont.truetype(font_path, size=22)
+        quote_font = ImageFont.truetype(font_path, size=18)
+    except IOError:
+        title_font = subtitle_font = quote_font = ImageFont.load_default()
+
+    quote_text_full = f"{quote_text}\n{quote_author}"
+    quote_x = 40
+    quote_y = bordered_img.height + 15
+    draw.text((quote_x, quote_y), flower, font=quote_font, fill=(30, 30, 30))
+
+    title_w, title_h = draw.textsize(title_text, font=title_font)
+    subtitle_w, subtitle_h = draw.textsize(subtitle_text, font=subtitle_font)
+
+    right_margin = 40
+    title_x = new_width - title_w - right_margin
+    subtitle_x = new_width - subtitle_w - right_margin
+    title_y = bordered_img.height + 15
+    subtitle_y = title_y + title_h + 10
+
+    draw.text((title_x, title_y), title_text, font=title_font, fill=(30, 30, 30))
+    draw.text((subtitle_x, subtitle_y), subtitle_text, font=subtitle_font, fill=(30, 30, 30))
+
+    # Save to a temporary file
+    temp_path = output_filename
+    final_img.save(temp_path)
+    image_url = upload_to_supabase_image(output_filename, "cover", output_filename, content_type="image/jpeg")
+    # Clean up
+    os.remove(temp_path)
+
+    return public_url
+
     
