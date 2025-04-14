@@ -103,9 +103,13 @@ def create_color_image(beautiful_color_text="Beautiful Color", randomly_generate
     font_large = ImageFont.truetype(font_path, 28)
 
     # Add text elements: hex and color name on the left, and texts from API payload on the right.
-    draw.text((40, img_height - 90), f'{hex_code} - {color_name.title()}', font=font_large, fill="black")
-    draw.text((img_width - 270, img_height - 90), beautiful_color_text, font=font_large, fill="black")
-    draw.text((img_width - 270, img_height - 50), randomly_generated_text, font=font_small, fill="black")
+    # draw.text((40, img_height - 90), f'{hex_code} - {color_name.title()}', font=font_large, fill="black")
+    # draw.text((img_width - 270, img_height - 90), beautiful_color_text, font=font_large, fill="black")
+    # draw.text((img_width - 270, img_height - 50), randomly_generated_text, font=font_small, fill="black")
+
+    draw.text((40, img_height - 90),beautiful_color_text, font=font_large, fill="black")
+    draw.text((40 , img_height - 50), randomly_generated_text, font=font_small, fill="black")
+    draw.text((img_width - 270 , img_height - 90), f'{hex_code} - {color_name.title()}', font=font_large, fill="black")
 
     # Save and show the generated image
     image.save("random_color_image.png")
