@@ -10,6 +10,20 @@ import imageio_ffmpeg
 from supabase import create_client
 from flask import Flask, request, jsonify
 
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import os
+import subprocess
+import requests
+import imageio_ffmpeg
+from uuid import uuid4
+from supabase import create_client
+from dotenv import load_dotenv
+import os
+
+# Initialize FastAPI app
+app = FastAPI()
+
 # ---------------------------
 # Configuration & Environment
 # ---------------------------
@@ -125,7 +139,8 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
 # ---------------------------
 app = Flask(__name__)
 
-@app.route('/generate-video/', methods=['POST'])
+# @app.route('/generate-video/', methods=['POST'])
+@app.post("/generate-video/")
 def generate_video_endpoint():
     """
     Expects JSON with:
@@ -146,7 +161,8 @@ def generate_video_endpoint():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/generate-color-image/', methods=['POST'])
+# @app.route('/generate-color-image/', methods=['POST'])
+@app.post("/generate-color-image/")
 def generate_color_image_endpoint():
     """
     Expects JSON with the following keys:
@@ -176,8 +192,8 @@ def generate_color_image_endpoint():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ---------------------------
-# Run the Flask App
-# ---------------------------
-if __name__ == "__main__":
-    app.run(debug=True)
+# # ---------------------------
+# # Run the Flask App
+# # ---------------------------
+# if __name__ == "__main__":
+#     app.run(debug=True)
