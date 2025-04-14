@@ -277,16 +277,16 @@ def generate(data:ImageGiminiRequest):
         if not chunk.candidates or not chunk.candidates[0].content or not chunk.candidates[0].content.parts:
             continue
         if chunk.candidates[0].content.parts[0].inline_data:
-            file_name = "export.jpeg"
+            file_name = "export"
             inline_data = chunk.candidates[0].content.parts[0].inline_data
             file_extension = mimetypes.guess_extension(inline_data.mime_type)
             save_binary_file(
                 f"{file_name}{file_extension}", inline_data.data
             )
 
-            object_name = file_name  # Fixed object name; adjust as needed
+            object_name = "export.jpeg"  # Fixed object name; adjust as needed
             # Upload the image to Supabase with content type "image/jpg"
-            image_url = upload_to_supabase_image("gimini_image.jpeg", "cover", object_name, content_type="image/jpeg")
+            image_url = upload_to_supabase_image("export.jpeg", "cover", object_name, content_type="image/jpeg")
             os.remove("random_color_image.jpeg")
             return {"image_url": image_url}
        
