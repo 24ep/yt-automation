@@ -44,7 +44,10 @@ class ImageGiminiRequest(BaseModel):
 
 
 
-
+def convert_png_to_jpeg(png_path, jpeg_path):
+    with Image.open(png_path) as img:
+        rgb_img = img.convert("RGB")  # JPEG doesn't support alpha channel
+        rgb_img.save(jpeg_path, "JPEG")
 
 def save_binary_file(file_name, data):
     f = open(file_name, "wb")
@@ -277,12 +280,13 @@ def generate(data:ImageGiminiRequest):
         if not chunk.candidates or not chunk.candidates[0].content or not chunk.candidates[0].content.parts:
             continue
         if chunk.candidates[0].content.parts[0].inline_data:
-            file_name = "export"
+            file_name = "export.png"
             inline_data = chunk.candidates[0].content.parts[0].inline_data
             file_extension = mimetypes.guess_extension(inline_data.mime_type)
-            save_binary_file(
-                f"{file_name}{file_extension}", inline_data.data
-            )
+            save_binary_file(file_name, inline_data.data)
+
+            # Convert PNG → JPEG
+            convert_png_to_jpeg(file_name, "export.jpeg")
 
             object_name = "export.jpeg"  # Fixed object name; adjust as needed
             # Upload the image to Supabase with content type "image/jpg"
