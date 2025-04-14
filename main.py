@@ -61,7 +61,7 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
         raise ValueError(f"Invalid hex code provided: {hex_code}")
     
     # Create a canvas with a light background
-    image = Image.new("RGB", (img_width, img_height), (245, 241, 234))
+    image = Image.new("RGB", (img_width, img_height), (250, 249, 246))
     draw = ImageDraw.Draw(image)
     
     # Draw the main color block using the provided color
@@ -113,7 +113,7 @@ def upload_to_supabase_video(file_path: str, bucket_name: str, object_name: str)
 # ---------------------------
 # Upload Function (supports custom content type)
 # ---------------------------
-def upload_to_supabase_image(file_path: str, bucket_name: str, object_name: str, content_type: str = "image/png") -> str:
+def upload_to_supabase_image(file_path: str, bucket_name: str, object_name: str, content_type: str = "image/jpg") -> str:
     """Uploads a file to Supabase storage and returns its public URL."""
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
     storage = supabase.storage.from_(bucket_name)
@@ -190,9 +190,9 @@ def generate_color_image_endpoint(data: ImageRequest):
     
     # Generate the image using the provided color details and labels
     create_color_image(provided_color_name, hex_code, phase, sentence)
-    object_name = "random_color_image.png"  # Fixed object name; adjust as needed
-    # Upload the image to Supabase with content type "image/png"
+    object_name = "random_color_image.jpg"  # Fixed object name; adjust as needed
+    # Upload the image to Supabase with content type "image/jpg"
     image_url = upload_to_supabase_image("random_color_image.jpg", "cover", object_name, content_type="image/jpg")
-    os.remove("random_color_image.png")
+    os.remove("random_color_image.jpg")
     return {"image_url": image_url}
     
