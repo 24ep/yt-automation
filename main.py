@@ -182,13 +182,12 @@ def generate_color_image_endpoint(data: ImageRequest):
     phase = data.phase
     sentence = data.sentence
 
-    try:
-        # Generate the image using the provided color details and labels
-        create_color_image(provided_color_name, hex_code, phase, sentence)
-        object_name = "random_color_image.png"  # Fixed object name; adjust as needed
-        # Upload the image to Supabase with content type "image/png"
-        image_url = upload_to_supabase_image("random_color_image.png", "cover", object_name, content_type="image/png")
-        os.remove("random_color_image.png")
-        return {"image_url": image_url}
-    except Exception as e:
-        return {"error": e}
+    
+    # Generate the image using the provided color details and labels
+    create_color_image(provided_color_name, hex_code, phase, sentence)
+    object_name = "random_color_image.png"  # Fixed object name; adjust as needed
+    # Upload the image to Supabase with content type "image/png"
+    image_url = upload_to_supabase_image("random_color_image.png", "cover", object_name, content_type="image/png")
+    os.remove("random_color_image.png")
+    return {"image_url": image_url}
+    
