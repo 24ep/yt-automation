@@ -149,13 +149,14 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
 
     ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
 
-       subprocess.run([
+    subprocess.run([
         ffmpeg_path,
         '-loop', '1',
+        '-framerate', '30',  # Specify the frame rate for the static image input
         '-i', image_path,
         '-i', audio_path,
-        '-vf', 'scale=1280:720',  # Scale the image to 1280x720 pixels
         '-c:v', 'libx264',
+        '-preset', 'fast',    # Optional: can help with encoding speed
         '-c:a', 'aac',
         '-b:a', '192k',
         '-shortest',
