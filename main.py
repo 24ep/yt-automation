@@ -42,6 +42,8 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
     Displays the provided hex and color name on the right-bottom of the image,
     and the labels 'phase' and 'sentence' on the left-bottom.
     
+    This version downloads a Google Font at runtime without storing it to disk.
+    
     Parameters:
       provided_color_name: The name of the color (e.g., "red").
       hex_code: The hexadecimal code for the color (e.g., "#FF0000").
@@ -50,35 +52,41 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
     """
     img_width, img_height = 1280, 720
     border = 40
-    # font_path = "C:/Windows/Fonts/arial.ttf"  # Update this path as needed
-
+    
     # Convert the hex code to RGB
     try:
         color_rgb = webcolors.hex_to_rgb(hex_code)
-    except Exception as e:
+    except Exception:
         raise ValueError(f"Invalid hex code provided: {hex_code}")
-
+    
     # Create a canvas with a light background
     image = Image.new("RGB", (img_width, img_height), (245, 241, 234))
     draw = ImageDraw.Draw(image)
-
+    
     # Draw the main color block using the provided color
     draw.rectangle([border, border, img_width - border, img_height - border - 80], fill=color_rgb)
-
-    # Load fonts
-    font_small = ImageFont.truetype(18)
-    font_large = ImageFont.truetype(28)
-
-    # Add text:
-    # Left-bottom: phase and sentence labels,
-    # Right-bottom: hex code and provided color name.
+    
+    # Download the Google Font without storing it locally
+    font_url = "https://github.com/google/fonts/blob/main/apache/opensanshebrew/OpenSansHebrew-Regular.ttf"
+    response = requests.get(font_url)
+    if response.status_code != 200:
+        raise Exception("Failed to download the font.")
+    
+    # Load the font directly from memory
+    font_data = BytesIO(response.content)
+    font_data.seek(0)
+    font_small = ImageFont.truetype(font_data, 18)
+    font_data.seek(0)  # Reset the buffer to reuse the same font data for a different size
+    font_large = ImageFont.truetype(font_data, 28)
+    
+    # Add text labels
     draw.text((40, img_height - 90), phase, font=font_large, fill="black")
     draw.text((40, img_height - 50), sentence, font=font_small, fill="black")
     draw.text((img_width - 250, img_height - 90), f'{hex_code} - {provided_color_name.title()}', font=font_large, fill="black")
-
+    
     # Save the generated image locally
     image.save("random_color_image.png")
-    # image.show()  # Uncomment this if you want to display the image
+    # image.show()  # Uncomment to display the image
 
 # ---------------------------
 # Upload Function (supports custom content type)
