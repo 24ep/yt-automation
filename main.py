@@ -147,7 +147,7 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
     audio_path = 'temp_audio.mp3'
     output_path = output_filename
     
-    optimize_image(image_path, image_path, quality=75)
+    optimize_image(image_path, image_path, quality=65)
     
     with open(image_path, 'wb') as f:
         f.write(requests.get(image_url).content)
