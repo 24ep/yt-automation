@@ -149,21 +149,22 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
 
     ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
 
-    subprocess.run([
+    command = [
         ffmpeg_path,
-        '-loop', '1',
-        '-framerate', '30',  # Specify the frame rate for the static image input
-        '-i', image_path,
-        '-i', audio_path,
-        '-c:v', 'libx264',
-        '-preset', 'fast',    # Optional: can help with encoding speed
-        '-c:a', 'aac',
-        '-b:a', '192k',
-        '-shortest',
-        '-pix_fmt', 'yuv420p',
-        '-y',
+        '-loop', '1',                   # Loop the image indefinitely
+        '-framerate', '30',             # Explicit frame rate for the static image
+        '-i', image_path,               # Input image file (1280x720)
+        '-i', audio_path,               # Input audio file
+        '-c:v', 'libx264',              # Video codec
+        '-preset', 'fast',              # Optional: adjust as needed for speed/quality
+        '-tune', 'stillimage',          # Optimize encoding for a still image
+        '-c:a', 'aac',                  # Audio codec
+        '-b:a', '192k',                 # Audio bitrate
+        '-pix_fmt', 'yuv420p',          # Ensure broad compatibility
+        '-shortest',                   # End the output when the shortest input ends
+        '-y',                          # Overwrite output file if it exists
         output_path
-    ], check=True)
+    ]
 
     os.remove(image_path)
     os.remove(audio_path)
