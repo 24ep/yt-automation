@@ -57,7 +57,7 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
       phase: Text label (default: "Beautiful Color").
       sentence: Text label (default: "Randomly Generated").
     """
-    img_width, img_height = 640, 360
+    img_width, img_height = 1280, 720
     border = 40
     
     # Convert the hex code to RGB
@@ -154,8 +154,6 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
     with open(audio_path, 'wb') as f:
         f.write(requests.get(audio_url).content)
 
-    
-
     ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
 
     subprocess.run([
@@ -164,6 +162,7 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
         '-i', image_path,
         '-i', audio_path,
         '-c:v', 'libx264',
+        '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2',  # This enforces even dimensions
         '-c:a', 'aac',
         '-b:a', '192k',
         '-shortest',
@@ -171,6 +170,7 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
         '-y',
         output_path
     ], check=True)
+
 
 
 
