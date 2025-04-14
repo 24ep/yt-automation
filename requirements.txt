@@ -9,3 +9,5 @@ Pillow
 webcolors
 flask
 gunicorn
+google
+google.genai
