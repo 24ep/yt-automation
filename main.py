@@ -12,6 +12,7 @@ from uuid import uuid4
 from supabase import create_client
 from dotenv import load_dotenv
 from io import BytesIO
+import json
 
 # Initialize FastAPI app
 app = FastAPI()
