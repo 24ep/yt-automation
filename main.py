@@ -170,7 +170,7 @@ def generate_color_image_endpoint():
         create_color_image(provided_color_name, hex_code, phase, sentence)
         object_name = "random_color_image.png"  # Fixed object name; adjust as needed
         # Upload the image to Supabase with content type "image/png"
-        image_url = upload_to_supabase("random_color_image.png", BUCKET_NAME, object_name, content_type="image/png")
+        image_url = upload_to_supabase("random_color_image.png", "cover", object_name, content_type="image/png")
         os.remove("random_color_image.png")
         return jsonify({"image_url": image_url})
     except Exception as e:
