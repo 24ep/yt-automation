@@ -136,7 +136,7 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
 # ---------------------------
 # Flask App Setup
 # ---------------------------
-app = Flask(__name__)
+# app = Flask(__name__)
 
 # @app.route('/generate-video/', methods=['POST'])
 @app.post("/generate-video/")
