@@ -149,7 +149,7 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
 
     ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
 
-    command = [
+     subprocess.run([
         ffmpeg_path,
         '-loop', '1',                   # Loop the image indefinitely
         '-framerate', '30',             # Explicit frame rate for the static image
@@ -164,7 +164,10 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
         '-shortest',                   # End the output when the shortest input ends
         '-y',                          # Overwrite output file if it exists
         output_path
-    ]
+    ], check=True)
+
+
+
 
     os.remove(image_path)
     os.remove(audio_path)
