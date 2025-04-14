@@ -382,6 +382,6 @@ def add_border_and_text_from_url(data:BorderSizeRequest):
     # Clean up
     os.remove(temp_path)
 
-    return {"image_url": public_url}
+    return {"image_url": image_url }
 
     
