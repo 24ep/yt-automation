@@ -159,18 +159,22 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
     subprocess.run([
         ffmpeg_path,
         '-loop', '1',
+        '-f', 'image2',         # Explicitly treat the input as an image sequence
         '-i', image_path,
         '-i', audio_path,
+        '-s', '1280x720',       # Force output resolution to 1280x720
+        '-r', '30',             # Set the frame rate to 30 fps (adjust as needed)
         '-c:v', 'libx264',
-        '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2',  # This enforces even dimensions
+        '-preset', 'slow',      # Optionally use a preset appropriate for still images
+        '-tune', 'stillimage',  # This tune helps with encoding single-frame images
         '-c:a', 'aac',
         '-b:a', '192k',
-        '-shortest',
         '-pix_fmt', 'yuv420p',
+        '-shortest',
         '-y',
         output_path
     ], check=True)
-
+    
 
 
 
