@@ -11,6 +11,7 @@ import imageio_ffmpeg
 from uuid import uuid4
 from supabase import create_client
 from dotenv import load_dotenv
+from io import BytesIO
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -78,6 +79,8 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
     font_small = ImageFont.truetype(font_data, 18)
     font_data.seek(0)  # Reset the buffer to reuse the same font data for a different size
     font_large = ImageFont.truetype(font_data, 28)
+
+    
     
     # Add text labels
     draw.text((40, img_height - 90), phase, font=font_large, fill="black")
