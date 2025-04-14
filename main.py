@@ -307,7 +307,7 @@ def generate(data:ImageGiminiRequest):
 
 @app.post("/add-image-border/")
 def add_border_and_text_from_url(data:BorderSizeRequest):
-    border_size = data.border_size
+    border_size = int(data.border_size)
     image_url = data.image_url
     phase = data.phase
     sentence = data.sentence
@@ -377,6 +377,6 @@ def add_border_and_text_from_url(data:BorderSizeRequest):
     # Clean up
     os.remove(temp_path)
 
-    return public_url
+    return {"image_url": public_url}
 
     
