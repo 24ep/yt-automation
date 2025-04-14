@@ -82,7 +82,7 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
     draw.text((img_width - 250, img_height - 90), f'{hex_code} - {provided_color_name.title()}', font=font_large, fill="black")
     
     # Save the generated image locally
-    image.save("random_color_image.jpg")
+    image.save("random_color_image.jpeg")
     # image.show()  # Uncomment to display the image
 
 # ---------------------------
@@ -113,7 +113,7 @@ def upload_to_supabase_video(file_path: str, bucket_name: str, object_name: str)
 # ---------------------------
 # Upload Function (supports custom content type)
 # ---------------------------
-def upload_to_supabase_image(file_path: str, bucket_name: str, object_name: str, content_type: str = "image/jpg") -> str:
+def upload_to_supabase_image(file_path: str, bucket_name: str, object_name: str, content_type: str = "image/jpeg") -> str:
     """Uploads a file to Supabase storage and returns its public URL."""
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
     storage = supabase.storage.from_(bucket_name)
@@ -190,9 +190,9 @@ def generate_color_image_endpoint(data: ImageRequest):
     
     # Generate the image using the provided color details and labels
     create_color_image(provided_color_name, hex_code, phase, sentence)
-    object_name = "random_color_image.jpg"  # Fixed object name; adjust as needed
+    object_name = "random_color_image.jpeg"  # Fixed object name; adjust as needed
     # Upload the image to Supabase with content type "image/jpg"
-    image_url = upload_to_supabase_image("random_color_image.jpg", "cover", object_name, content_type="image/jpg")
-    os.remove("random_color_image.jpg")
+    image_url = upload_to_supabase_image("random_color_image.jpeg", "cover", object_name, content_type="image/jpeg")
+    os.remove("random_color_image.jpeg")
     return {"image_url": image_url}
     
