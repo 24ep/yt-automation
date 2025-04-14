@@ -91,6 +91,17 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
     image.save("random_color_image.jpeg")
     # image.show()  # Uncomment to display the image
 
+def get_audio_duration(audio_path):
+    command = [
+        'ffprobe', 
+        '-v', 'error',
+        '-show_entries', 'format=duration',
+        '-of', 'json',
+        audio_path
+    ]
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+    data = json.loads(result.stdout)
+    return float(data['format']['duration'])
 # ---------------------------
 # Upload Function (supports custom content type)
 # ---------------------------
@@ -154,7 +165,11 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
     with open(audio_path, 'wb') as f:
         f.write(requests.get(audio_url).content)
 
+    
+
     ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
+
+    audio_duration = get_audio_duration(audio_path)
 
     subprocess.run([
         ffmpeg_path,
@@ -162,6 +177,7 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
         '-loop', '1',              # Loop the input image
         '-i', image_path,
         '-c:v', 'libx264',
+        '-t', audio_duration,
         '-r', '30',                # Frame rate (adjust if needed)
         '-pix_fmt', 'yuv420p',
         'temp_video.mp4'
