@@ -50,7 +50,7 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
     """
     img_width, img_height = 1280, 720
     border = 40
-    font_path = "C:/Windows/Fonts/arial.ttf"  # Update this path as needed
+    # font_path = "C:/Windows/Fonts/arial.ttf"  # Update this path as needed
 
     # Convert the hex code to RGB
     try:
@@ -66,8 +66,8 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
     draw.rectangle([border, border, img_width - border, img_height - border - 80], fill=color_rgb)
 
     # Load fonts
-    font_small = ImageFont.truetype(font_path, 18)
-    font_large = ImageFont.truetype(font_path, 28)
+    font_small = ImageFont.truetype(18)
+    font_large = ImageFont.truetype(28)
 
     # Add text:
     # Left-bottom: phase and sentence labels,
