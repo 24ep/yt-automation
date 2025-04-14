@@ -82,7 +82,7 @@ def random_color():
 def create_color_image(beautiful_color_text="Beautiful Color", randomly_generated_text="Randomly Generated"):
     """
     Creates and saves an image of a randomly generated color.
-    The texts at the bottom right of the image are provided as parameters.
+    The texts are added as labels to the image.
     """
     img_width, img_height = 1280, 720
     border = 40
@@ -102,23 +102,22 @@ def create_color_image(beautiful_color_text="Beautiful Color", randomly_generate
     font_small = ImageFont.truetype(font_path, 18)
     font_large = ImageFont.truetype(font_path, 28)
 
-    # Add text elements: hex and color name on the left, and texts from API payload on the right.
-    # draw.text((40, img_height - 90), f'{hex_code} - {color_name.title()}', font=font_large, fill="black")
-    # draw.text((img_width - 270, img_height - 90), beautiful_color_text, font=font_large, fill="black")
-    # draw.text((img_width - 270, img_height - 50), randomly_generated_text, font=font_small, fill="black")
+    # Add text elements:
+    # Left-bottom: custom labels,
+    # Right-bottom: hex code and color name.
+    draw.text((40, img_height - 90), beautiful_color_text, font=font_large, fill="black")
+    draw.text((40, img_height - 50), randomly_generated_text, font=font_small, fill="black")
+    draw.text((img_width - 270, img_height - 90), f'{hex_code} - {color_name.title()}', font=font_large, fill="black")
 
-    draw.text((40, img_height - 90),beautiful_color_text, font=font_large, fill="black")
-    draw.text((40 , img_height - 50), randomly_generated_text, font=font_small, fill="black")
-    draw.text((img_width - 270 , img_height - 90), f'{hex_code} - {color_name.title()}', font=font_large, fill="black")
-
-    # Save and show the generated image
+    # Save the generated image
     image.save("random_color_image.png")
-    image.show()
+    # Optionally, remove image.show() if not needed in a web environment.
+    # image.show()
 
 # ---------------------------
-# Video Creation & Upload Functions
+# Upload Function (supports custom content type)
 # ---------------------------
-def upload_to_supabase(file_path: str, bucket_name: str, object_name: str) -> str:
+def upload_to_supabase(file_path: str, bucket_name: str, object_name: str, content_type: str = "video/mp4") -> str:
     """Uploads a file to Supabase storage and returns its public URL."""
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
     storage = supabase.storage.from_(bucket_name)
@@ -131,13 +130,16 @@ def upload_to_supabase(file_path: str, bucket_name: str, object_name: str) -> st
             print(f"Warning: Could not delete existing file: {delete_error}")
 
         with open(file_path, "rb") as file:
-            storage.upload(object_name, file, {"content-type": "video/mp4"})
+            storage.upload(object_name, file, {"content-type": content_type})
         return storage.get_public_url(object_name)
     except Exception as e:
         raise RuntimeError(f"Supabase upload failed: {e}")
 
+# ---------------------------
+# Video Creation Function (unchanged)
+# ---------------------------
 def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
-    """Downloads an image and an audio file, merges them into a video using ffmpeg, and returns the path to the video."""
+    """Downloads an image and an audio file, merges them into a video using ffmpeg, and returns the video file path."""
     image_path = 'temp_image.jpg'
     audio_path = 'temp_audio.mp3'
     output_path = output_filename
@@ -197,17 +199,24 @@ def generate_video_endpoint():
 def generate_color_image_endpoint():
     """
     Expects JSON with optional keys:
-      - beautiful_color: Text for the upper-right label (default: "Beautiful Color")
-      - randomly_generated: Text for the lower-right label (default: "Randomly Generated")
-    Generates a random color image and saves it as random_color_image.png.
+      - beautiful_color: Text for a label (default: "Beautiful Color")
+      - randomly_generated: Text for a label (default: "Randomly Generated")
+    Generates a random color image, uploads it to Supabase, and returns its public URL.
     """
     data = request.get_json() or {}
     beautiful_color_text = data.get('beautiful_color', "Beautiful Color")
     randomly_generated_text = data.get('randomly_generated', "Randomly Generated")
 
     try:
+        # Generate the image locally
         create_color_image(beautiful_color_text, randomly_generated_text)
-        return jsonify({"message": "Random color image generated and saved as random_color_image.png."})
+        # Create a unique object name for the image; here we're using a fixed name
+        object_name = "random_color_image.png"
+        # Upload the image to Supabase with content type "image/png"
+        image_url = upload_to_supabase("random_color_image.png", BUCKET_NAME, object_name, content_type="image/png")
+        # Remove the local image file if desired
+        os.remove("random_color_image.png")
+        return jsonify({"image_url": image_url})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
