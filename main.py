@@ -59,7 +59,7 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
       sentence: Text label (default: "Randomly Generated").
     """
     img_width, img_height = 1280, 720
-    border = 40
+    border = 50
     
     # Convert the hex code to RGB
     try:
