@@ -19,100 +19,51 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 BUCKET_NAME = os.getenv("BUCKET_NAME")
 
 # ---------------------------
-# Random Color & Image Functions
+# Image Functions (Modified to use provided color)
 # ---------------------------
-css3_colors = {
-    'aliceblue': '#F0F8FF', 'antiquewhite': '#FAEBD7', 'aqua': '#00FFFF', 'aquamarine': '#7FFFD4',
-    'azure': '#F0FFFF', 'beige': '#F5F5DC', 'bisque': '#FFE4C4', 'black': '#000000',
-    'blanchedalmond': '#FFEBCD', 'blue': '#0000FF', 'blueviolet': '#8A2BE2', 'brown': '#A52A2A',
-    'burlywood': '#DEB887', 'cadetblue': '#5F9EA0', 'chartreuse': '#7FFF00', 'chocolate': '#D2691E',
-    'coral': '#FF7F50', 'cornflowerblue': '#6495ED', 'cornsilk': '#FFF8DC', 'crimson': '#DC143C',
-    'cyan': '#00FFFF', 'darkblue': '#00008B', 'darkcyan': '#008B8B', 'darkgoldenrod': '#B8860B',
-    'darkgray': '#A9A9A9', 'darkgreen': '#006400', 'darkkhaki': '#BDB76B', 'darkmagenta': '#8B008B',
-    'darkolivegreen': '#556B2F', 'darkorange': '#FF8C00', 'darkorchid': '#9932CC', 'darkred': '#8B0000',
-    'darksalmon': '#E9967A', 'darkseagreen': '#8FBC8F', 'darkslateblue': '#483D8B', 'darkslategray': '#2F4F4F',
-    'darkturquoise': '#00CED1', 'darkviolet': '#9400D3', 'deeppink': '#FF1493', 'deepskyblue': '#00BFFF',
-    'dimgray': '#696969', 'dodgerblue': '#1E90FF', 'firebrick': '#B22222', 'floralwhite': '#FFFAF0',
-    'forestgreen': '#228B22', 'fuchsia': '#FF00FF', 'gainsboro': '#DCDCDC', 'ghostwhite': '#F8F8FF',
-    'gold': '#FFD700', 'goldenrod': '#DAA520', 'gray': '#808080', 'green': '#008000',
-    'greenyellow': '#ADFF2F', 'honeydew': '#F0FFF0', 'hotpink': '#FF69B4', 'indianred': '#CD5C5C',
-    'indigo': '#4B0082', 'ivory': '#FFFFF0', 'khaki': '#F0E68C', 'lavender': '#E6E6FA',
-    'lavenderblush': '#FFF0F5', 'lawngreen': '#7CFC00', 'lemonchiffon': '#FFFACD', 'lightblue': '#ADD8E6',
-    'lightcoral': '#F08080', 'lightcyan': '#E0FFFF', 'lightgoldenrodyellow': '#FAFAD2', 'lightgray': '#D3D3D3',
-    'lightgreen': '#90EE90', 'lightpink': '#FFB6C1', 'lightsalmon': '#FFA07A', 'lightseagreen': '#20B2AA',
-    'lightskyblue': '#87CEFA', 'lightslategray': '#778899', 'lightsteelblue': '#B0C4DE', 'lightyellow': '#FFFFE0',
-    'lime': '#00FF00', 'limegreen': '#32CD32', 'linen': '#FAF0E6', 'magenta': '#FF00FF',
-    'maroon': '#800000', 'mediumaquamarine': '#66CDAA', 'mediumblue': '#0000CD', 'mediumorchid': '#BA55D3',
-    'mediumpurple': '#9370DB', 'mediumseagreen': '#3CB371', 'mediumslateblue': '#7B68EE', 'mediumspringgreen': '#00FA9A',
-    'mediumturquoise': '#48D1CC', 'mediumvioletred': '#C71585', 'midnightblue': '#191970', 'mintcream': '#F5FFFA',
-    'mistyrose': '#FFE4E1', 'moccasin': '#FFE4B5', 'navajowhite': '#FFDEAD', 'navy': '#000080',
-    'oldlace': '#FDF5E6', 'olive': '#808000', 'olivedrab': '#6B8E23', 'orange': '#FFA500',
-    'orangered': '#FF4500', 'orchid': '#DA70D6', 'palegoldenrod': '#EEE8AA', 'palegreen': '#98FB98',
-    'paleturquoise': '#AFEEEE', 'palevioletred': '#DB7093', 'papayawhip': '#FFEFD5', 'peachpuff': '#FFDAB9',
-    'peru': '#CD853F', 'pink': '#FFC0CB', 'plum': '#DDA0DD', 'powderblue': '#B0E0E6',
-    'purple': '#800080', 'rebeccapurple': '#663399', 'red': '#FF0000', 'rosybrown': '#BC8F8F',
-    'royalblue': '#4169E1', 'saddlebrown': '#8B4513', 'salmon': '#FA8072', 'sandybrown': '#F4A460',
-    'seagreen': '#2E8B57', 'seashell': '#FFF5EE', 'sienna': '#A0522D', 'silver': '#C0C0C0',
-    'skyblue': '#87CEEB', 'slateblue': '#6A5ACD', 'slategray': '#708090', 'snow': '#FFFAFA',
-    'springgreen': '#00FF7F', 'steelblue': '#4682B4', 'tan': '#D2B48C', 'teal': '#008080',
-    'thistle': '#D8BFD8', 'tomato': '#FF6347', 'turquoise': '#40E0D0', 'violet': '#EE82EE',
-    'wheat': '#F5DEB3', 'white': '#FFFFFF', 'whitesmoke': '#F5F5F5', 'yellow': '#FFFF00',
-    'yellowgreen': '#9ACD32'
-}
-
-def get_closest_color_name(hex_code):
-    """Finds the closest CSS3 color name to the given hex code."""
-    r, g, b = webcolors.hex_to_rgb(hex_code)
-    min_dist = float('inf')
-    closest_name = None
-    for name, hex_val in css3_colors.items():
-        r2, g2, b2 = webcolors.hex_to_rgb(hex_val)
-        dist = (r - r2) ** 2 + (g - g2) ** 2 + (b - b2) ** 2
-        if dist < min_dist:
-            min_dist = dist
-            closest_name = name
-    return closest_name
-
-def random_color():
-    """Generates a random color in RGB and hex format."""
-    r, g, b = [random.randint(0, 255) for _ in range(3)]
-    hex_code = '#{:02X}{:02X}{:02X}'.format(r, g, b)
-    return (r, g, b), hex_code
-
-def create_color_image(beautiful_color_text="Beautiful Color", randomly_generated_text="Randomly Generated"):
+def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", sentect="Randomly Generated"):
     """
-    Creates and saves an image of a randomly generated color.
-    The texts are added as labels to the image.
+    Creates and saves an image using the provided hex code and color name.
+    Displays the provided hex and color name on the right-bottom of the image,
+    and the labels 'phase' and 'sentect' on the left-bottom.
+    
+    Parameters:
+      provided_color_name: The name of the color (e.g., "red").
+      hex_code: The hexadecimal code for the color (e.g., "#FF0000").
+      phase: Text label (default: "Beautiful Color").
+      sentect: Text label (default: "Randomly Generated").
     """
     img_width, img_height = 1280, 720
     border = 40
-    font_path = "C:/Windows/Fonts/arial.ttf"  # Update if needed
+    font_path = "C:/Windows/Fonts/arial.ttf"  # Update this path as needed
 
-    color_rgb, hex_code = random_color()
-    color_name = get_closest_color_name(hex_code)
+    # Convert the hex code to RGB
+    try:
+        color_rgb = webcolors.hex_to_rgb(hex_code)
+    except Exception as e:
+        raise ValueError(f"Invalid hex code provided: {hex_code}")
 
-    # Create canvas with a light background
+    # Create a canvas with a light background
     image = Image.new("RGB", (img_width, img_height), (245, 241, 234))
     draw = ImageDraw.Draw(image)
 
-    # Draw main color block
+    # Draw the main color block using the provided color
     draw.rectangle([border, border, img_width - border, img_height - border - 80], fill=color_rgb)
 
     # Load fonts
     font_small = ImageFont.truetype(font_path, 18)
     font_large = ImageFont.truetype(font_path, 28)
 
-    # Add text elements:
-    # Left-bottom: custom labels,
-    # Right-bottom: hex code and color name.
-    draw.text((40, img_height - 90), beautiful_color_text, font=font_large, fill="black")
-    draw.text((40, img_height - 50), randomly_generated_text, font=font_small, fill="black")
-    draw.text((img_width - 270, img_height - 90), f'{hex_code} - {color_name.title()}', font=font_large, fill="black")
+    # Add text:
+    # Left-bottom: phase and sentect labels,
+    # Right-bottom: hex code and provided color name.
+    draw.text((40, img_height - 90), phase, font=font_large, fill="black")
+    draw.text((40, img_height - 50), sentect, font=font_small, fill="black")
+    draw.text((img_width - 270, img_height - 90), f'{hex_code} - {provided_color_name.title()}', font=font_large, fill="black")
 
-    # Save the generated image
+    # Save the generated image locally
     image.save("random_color_image.png")
-    # Optionally, remove image.show() if not needed in a web environment.
-    # image.show()
+    # image.show()  # Uncomment this if you want to display the image
 
 # ---------------------------
 # Upload Function (supports custom content type)
@@ -123,7 +74,7 @@ def upload_to_supabase(file_path: str, bucket_name: str, object_name: str, conte
     storage = supabase.storage.from_(bucket_name)
 
     try:
-        # Attempt to delete an existing file with the same object name if it exists
+        # Attempt to remove an existing file with the same object name, if it exists
         try:
             storage.remove([object_name])
         except Exception as delete_error:
@@ -198,23 +149,28 @@ def generate_video_endpoint():
 @app.route('/generate-color-image/', methods=['POST'])
 def generate_color_image_endpoint():
     """
-    Expects JSON with optional keys:
-      - beautiful_color: Text for a label (default: "Beautiful Color")
-      - randomly_generated: Text for a label (default: "Randomly Generated")
-    Generates a random color image, uploads it to Supabase, and returns its public URL.
+    Expects JSON with the following keys:
+      - color_name: The name of the color (e.g., "red").
+      - hex_code: The hexadecimal code for the color (e.g., "#FF0000").
+      - phase: (Optional) Label text (default: "Beautiful Color").
+      - sentect: (Optional) Label text (default: "Randomly Generated").
+    Generates an image using the provided color, uploads it to Supabase, and returns its public URL.
     """
     data = request.get_json() or {}
-    beautiful_color_text = data.get('beautiful_color', "Beautiful Color")
-    randomly_generated_text = data.get('randomly_generated', "Randomly Generated")
+    if 'color_name' not in data or 'hex_code' not in data:
+        return jsonify({"error": "Please provide both 'color_name' and 'hex_code' in the JSON body."}), 400
+
+    provided_color_name = data['color_name']
+    hex_code = data['hex_code']
+    phase = data.get('phase', "Beautiful Color")
+    sentect = data.get('sentect', "Randomly Generated")
 
     try:
-        # Generate the image locally
-        create_color_image(beautiful_color_text, randomly_generated_text)
-        # Create a unique object name for the image; here we're using a fixed name
-        object_name = "random_color_image.png"
+        # Generate the image using the provided color details and labels
+        create_color_image(provided_color_name, hex_code, phase, sentect)
+        object_name = "random_color_image.png"  # Fixed object name; adjust as needed
         # Upload the image to Supabase with content type "image/png"
         image_url = upload_to_supabase("random_color_image.png", BUCKET_NAME, object_name, content_type="image/png")
-        # Remove the local image file if desired
         os.remove("random_color_image.png")
         return jsonify({"image_url": image_url})
     except Exception as e:
