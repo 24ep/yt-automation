@@ -74,7 +74,7 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
     # Right-bottom: hex code and provided color name.
     draw.text((40, img_height - 90), phase, font=font_large, fill="black")
     draw.text((40, img_height - 50), sentence, font=font_small, fill="black")
-    draw.text((img_width - 270, img_height - 90), f'{hex_code} - {provided_color_name.title()}', font=font_large, fill="black")
+    draw.text((img_width - 250, img_height - 90), f'{hex_code} - {provided_color_name.title()}', font=font_large, fill="black")
 
     # Save the generated image locally
     image.save("random_color_image.png")
@@ -105,25 +105,28 @@ def upload_to_supabase_video(file_path: str, bucket_name: str, object_name: str)
 
 
 
-def upload_to_supabase_image(file_path: str, bucket_name: str, object_name: str) -> str:
+# ---------------------------
+# Upload Function (supports custom content type)
+# ---------------------------
+def upload_to_supabase_image(file_path: str, bucket_name: str, object_name: str, content_type: str = "image/png") -> str:
+    """Uploads a file to Supabase storage and returns its public URL."""
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
     storage = supabase.storage.from_(bucket_name)
 
     try:
+        # Attempt to remove an existing file with the same object name, if it exists
         try:
             storage.remove([object_name])
         except Exception as delete_error:
             print(f"Warning: Could not delete existing file: {delete_error}")
 
         with open(file_path, "rb") as file:
-            # Specify the content type as video/mp4
-            storage.upload(object_name, file, {
-                "content-type": "image/png"
-            })
-
+            storage.upload(object_name, file, {"content-type": content_type})
         return storage.get_public_url(object_name)
     except Exception as e:
         raise RuntimeError(f"Supabase upload failed: {e}")
+
+
 # ---------------------------
 # Video Creation Function (unchanged)
 # ---------------------------
