@@ -8,7 +8,6 @@ from PIL import Image, ImageDraw, ImageFont
 import webcolors
 import imageio_ffmpeg
 from supabase import create_client
-from flask import Flask, request, jsonify
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
