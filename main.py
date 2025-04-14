@@ -186,6 +186,6 @@ def generate_color_image_endpoint(data: ImageRequest):
         # Upload the image to Supabase with content type "image/png"
         image_url = upload_to_supabase_image("random_color_image.png", "cover", object_name, content_type="image/png")
         os.remove("random_color_image.png")
-        return jsonify({"image_url": image_url})
+        return {"image_url": image_url}
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        raise HTTPException(status_code=500, detail=str(e))
