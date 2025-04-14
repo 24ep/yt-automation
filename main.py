@@ -322,9 +322,9 @@ def add_border_and_text_from_url(data:BorderSizeRequest):
 
     image = Image.open(BytesIO(response.content)).convert("RGB")
 
-    # Resize to 1280x720 while maintaining aspect ratio
+   # Resize image to 1280x720 with high-quality resampling
     target_size = (1280, 720)
-    image = image.resize(target_size, Image.ANTIALIAS)
+    image = image.resize(target_size, Image.Resampling.LANCZOS)
 
     # Border and text parameters
     border_color = (239, 235, 224)
