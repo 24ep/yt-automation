@@ -291,7 +291,7 @@ def generate(data:ImageGiminiRequest):
             object_name = "export.jpeg"  # Fixed object name; adjust as needed
             # Upload the image to Supabase with content type "image/jpg"
             image_url = upload_to_supabase_image("export.jpeg", "cover", object_name, content_type="image/jpeg")
-            os.remove("random_color_image.jpeg")
+            os.remove("export.jpeg")
             return {"image_url": image_url}
        
         else:
