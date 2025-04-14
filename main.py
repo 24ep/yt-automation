@@ -158,22 +158,29 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
 
     subprocess.run([
         ffmpeg_path,
-        '-loop', '1',
-        '-f', 'image2',         # Explicitly treat the input as an image sequence
+        '-y',
+        '-loop', '1',              # Loop the input image
         '-i', image_path,
-        '-i', audio_path,
-        '-s', '1280x720',       # Force output resolution to 1280x720
-        '-r', '30',             # Set the frame rate to 30 fps (adjust as needed)
         '-c:v', 'libx264',
-        '-preset', 'slow',      # Optionally use a preset appropriate for still images
-        '-tune', 'stillimage',  # This tune helps with encoding single-frame images
+        '-t', '30',                # Set duration matching (or exceeding) your audio length
+        '-r', '30',                # Frame rate (adjust if needed)
+        '-pix_fmt', 'yuv420p',
+        'temp_video.mp4'
+    ], check=True)
+
+        # Merge the temporary video with the audio
+    subprocess.run([
+        ffmpeg_path,
+        '-y',
+        '-i', 'temp_video.mp4',
+        '-i', audio_path,
+        '-c:v', 'copy',
         '-c:a', 'aac',
         '-b:a', '192k',
-        '-pix_fmt', 'yuv420p',
-        '-shortest',
-        '-y',
+        '-shortest',               # Stop output when the shorter stream (likely audio) ends
         output_path
     ], check=True)
+
     
 
 
