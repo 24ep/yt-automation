@@ -323,6 +323,9 @@ def add_border_and_text_from_url(data:BorderSizeRequest):
     image = Image.open(BytesIO(response.content)).convert("RGB")
 
    # Resize image to 1280x720 with high-quality resampling
+    target_size = (1280, 720)
+    image = image.resize(target_size, Image.Resampling.LANCZOS)
+    
 
     # Border and text parameters
     border_color = (239, 235, 224)
@@ -376,8 +379,10 @@ def add_border_and_text_from_url(data:BorderSizeRequest):
     # Save to a temporary file
     temp_path = output_filename
     final_img.save(temp_path)
+    
     target_size = (1280, 720)
     image = final_img.resize(target_size, Image.Resampling.LANCZOS)
+    image.save(temp_path)
     
     image_url = upload_to_supabase_image(output_filename, "cover", output_filename, content_type="image/jpeg")
     # Clean up
