@@ -57,7 +57,7 @@ def create_color_image(provided_color_name, hex_code, phase="Beautiful Color", s
       phase: Text label (default: "Beautiful Color").
       sentence: Text label (default: "Randomly Generated").
     """
-    img_width, img_height = 1280, 720
+    img_width, img_height = 640, 360
     border = 40
     
     # Convert the hex code to RGB
@@ -147,7 +147,6 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
     audio_path = 'temp_audio.mp3'
     output_path = output_filename
     
-    optimize_image(image_path, image_path, quality=65)
     
     with open(image_path, 'wb') as f:
         f.write(requests.get(image_url).content)
