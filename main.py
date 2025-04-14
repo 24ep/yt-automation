@@ -191,4 +191,4 @@ def generate_color_image_endpoint(data: ImageRequest):
         os.remove("random_color_image.png")
         return {"image_url": image_url}
     except Exception as e:
-        raise {"error": e}
+        return {"error": e}
