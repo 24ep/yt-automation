@@ -178,7 +178,7 @@ def create_video(image_url: str, audio_url: str, output_filename: str) -> str:
         '-loop', '1',              # Loop the input image
         '-i', image_path,
         '-c:v', 'libx264',
-        '-t', audio_duration,
+        '-t', str(audio_duration),
         '-r', '30',                # Frame rate (adjust if needed)
         '-pix_fmt', 'yuv420p',
         'temp_video.mp4'
